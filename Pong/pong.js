@@ -31,7 +31,8 @@ const ball = {
     radius : 10,
     speed : 5,
     velocityX : 5,
-    velocityY : 5
+    velocityY : 5,
+    color : "White"
 }
 
 //Draw Rectangle Function
@@ -64,6 +65,6 @@ drawText("something", 300, 200, "White");
 let rectX = 0;
 
 function  render(){
-    drawRect(0,0,600,400,"black");
-    drawRect(rectx,0,600,400,"black");
+    //clear the canvas
+    drawRect(0, 0, canvas.width, canvas.height, "Black");
 }
