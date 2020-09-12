@@ -8,7 +8,7 @@ const user = {
     y : canvas.height/2 - 100/2,
     width : 10,
     height : 100,
-    color : "White"
+    color : "WHITE"
     score : 0
 }
 
@@ -19,7 +19,7 @@ const com = {
     y : canvas.height/2 - 100/2,
     width : 10,
     height : 100,
-    color : "White"
+    color : "WHITE"
     score : 0
 }
 
@@ -32,7 +32,7 @@ const ball = {
     speed : 5,
     velocityX : 5,
     velocityY : 5,
-    color : "White"
+    color : "WHITE"
 }
 
 //Draw Rectangle Function
@@ -41,18 +41,31 @@ function drawRect(x, y, w, h, color){
     context.fillRect(x,y,w,h);
 }
 
-drawRect(0,0,canvas.clientWidth, canvas.clientHeight, "Black");
+drawRect(0,0,canvas.clientWidth, canvas.clientHeight, "BLACK");
+const net = {
+    x : canvas.width - 1,
+    y : 0,
+    width : 2,
+    height : 10,
+    color : "WHITE"
+}
+
+function drawNet(){
+    for (let i = 0; i < canvas.height; i+=15){
+        drawRect(net.x, net.y+i, net.width, net.height, net.color);
+    }
+}
 
 //Draw Circle
 function drawCircle(x,y,r,color){
     context.fillStyle = color;
     context.beginPath();
-    context.arc(x,y,r,-,Math.PI*2, false);
+    context.arc(x,y,r,Math.PI*2, false);
     context.closePath();
     context.fill();
 }
 
-drawCircle(100, 100, 50, "White");
+drawCircle(100, 100, 50, "WHITE");
 
 //Draw Text
 function drawText(text,x,y,color){
@@ -61,10 +74,68 @@ function drawText(text,x,y,color){
     context.fillText(text,x,y);
 }
 
-drawText("something", 300, 200, "White");
-let rectX = 0;
+drawText("something", 300, 200, "WHITE");
+
 
 function  render(){
     //clear the canvas
-    drawRect(0, 0, canvas.width, canvas.height, "Black");
+    drawRect(0, 0, canvas.width, canvas.height, "BLACK");
+
+    drawNet();
+
+    drawText(user.score, canvas.width/4, canvas.height/5, "WHITE");
+    drawText(com.score, 3*canvas.width/4, canvas.height/5, "WHITE");
+
+    drawRect(user.x, user.y, user.width, user.height, user.color);
+    drawRect(com.x, com.y, com.width, com.height, com.color);
+
+    drawCircle(ball.x, ball.y, ball.radius, ball.color);
+
 }
+
+
+canvas.addEventListener("mousemove", movePaddle);
+
+function movePaddle(evt){
+    let rect = canvas.getBoundingClientRect();
+
+    user.y = evt.clientY - rect.top - user.height/2;
+}
+
+
+function collision(b,p){
+    b.top = b.y - b.radius;
+    b.bottom = b.y + b.radius;
+    b.left = b.x - b.radius;
+    b.right = b.x + b.radius;
+
+    p.top = p.y;
+    p.bottom = p.y + p.height;
+    p.left = p.x;
+    p.right = p.x + p.width;
+
+    return b.right > p.left && b.bottom > p.top && b.left < p.right && b.top < p.bottom;
+}
+
+function update(){
+    ball.x += ball.velocityX;
+    ball.y += ball.velocityY;
+
+    if(ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0){
+        ball.velocityY = -ball.velocityY;
+    }
+
+    let player = (ball.x < canvas.width/2) ? user : com;
+
+    if(collision(ball, player)){
+
+    }
+}
+
+function game() {
+    render();
+}
+
+conwt framePerSecond = 50;
+setInterval(game, 1000/framePerSecond);
+
